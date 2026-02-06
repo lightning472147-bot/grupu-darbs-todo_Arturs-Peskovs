@@ -7,7 +7,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </head>
 <body>
-    <div class="container">
         <!--<h3 class="text-center">Mani darbi</h3>-->
         <div class="card">
             <div class="card-body">
@@ -22,55 +21,36 @@
     </div>
     
     <script>
-        function _fukcija() 
+       function _fukcija() 
         {
            const vert = document.getElementById("lauks").value;
-           const li = document.createElement("li");
-           
-           li.classList.add("list-group-item");
-           
-           const vertNode = document.createTextNode(vert);
-           li.appendChild(vertNode);
-           
-            const span = document.createElement("span");
-            span.textContent = vert;
-        
-            const btn = document.createElement("button");
-            btn.classList.add("btn", "btn-danger", "btn-sm", "float-end");
-            btn.textContent = "Dzest";
+           if (vert === "") return;
 
-            btn.addEventListener("click", () => {
-                li.remove();
-            });
-        
-            li.appendChild(span);
-            li.appendChild(btn);
-           
-           
+           const li = document.createElement("li");
+           li.classList.add("list-group-item");
+
+           const span = document.createElement("span");
+           span.textContent = vert;
+
+           span.addEventListener("click", function () {
+               span.classList.toggle("text-decoration-line-through");
+           });
+
+           const btn = document.createElement("button");
+           btn.classList.add("btn", "btn-danger", "btn-sm", "float-end");
+           btn.textContent = "Dzest";
+
+           btn.addEventListener("click", () => {
+               li.remove();
+           });
+
+           li.appendChild(span);
+           li.appendChild(btn);
+
            document.getElementById("task-list").appendChild(li);
            document.getElementById("lauks").value = "";
-           
-        }
-        
-        function _izsvitro()
-        {
-            
         }
     </script>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
 </body>
 </html>
