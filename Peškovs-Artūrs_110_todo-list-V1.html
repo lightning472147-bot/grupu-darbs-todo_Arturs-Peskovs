@@ -12,13 +12,18 @@
             <div class="card-body">
             <h3 class="text-center">Mani darbi</h3><!--class="card-title"-->
                 <div class="input-group mb-3">
+                    <select name= "kirils" id="select" class="form-select">
+                        <option value="default">Izvēlēteis prioritāti</option>
+                          <option value="Svarīgs">Svarīgs</option>
+                          <option value="Vidēji svarīgs">Vidēji svarīgs</option>
+                            <option value="Mazsvarīgs">Mazsvarīgs</option>
+                    </select>
                     <input type="text" class="form-control" id="lauks" placeholder="Ievadi darbu..." aria-label="Recipient's username" aria-describedby="button-addon2">
                     <button class="btn btn-primary" type="button" onclick="_fukcija()" id="button-addon2">Pievienot</button> <!--class="btn btn-outline-secondary"-->
                 </div>
                 <ul id="task-list" class="list-group"></ul>
             </div>
         </div>
-    </div>
     
    <script>
 
@@ -27,8 +32,9 @@ function datasave() {
 
     document.querySelectorAll("#task-list li").forEach(li => {
         tasks.push({
-            text: li.querySelector("span").textContent,
-            done: li.querySelector("span")
+            text: li.querySelector(".task-text").textContent,
+            select: li.dataset.select,
+            done: li.querySelector(".task-text")
                     .classList.contains("text-decoration-line-through")
         });
     });
@@ -40,17 +46,34 @@ function dataload(){
     const data = JSON.parse(localStorage.getItem("tasks")) || [];
 
     data.forEach(task => {
-        addTask(task.text, task.done);
+        addTask(task.text, task.done, task.select);
     });
 }
 
-function addTask(text, done = false) {
+function addTask(vert, done = false, select = "Mazsvarīgs") {
 
-    const li = document.createElement("li");
-    li.classList.add("list-group-item");
+    const node = document.createElement("li");
+    node.className = "list-group-item d-flex align-items-center justify-content-between";
+    node.dataset.select = select;
+    
+    const left = document.createElement("div");
+    left.className = "d-flex align-items-center gap-2";
+    
+    const badge = document.createElement("span");
+    badge.className = "badge";
+    
+    if (select === "Svarīgs") badge.classList.add("bg-danger");
+    if (select === "Vidēji svarīgs") badge.classList.add("bg-warning", "text-dark");
+    if (select === "Mazsvarīgs") badge.classList.add("bg-success");
+    
+    badge.textContent = select.toUpperCase();
 
     const span = document.createElement("span");
-    span.textContent = text;
+    span.textContent = vert;
+    span.className = "task-text";
+    
+    left.appendChild(badge);
+    left.appendChild(span);
 
     if (done) {
         span.classList.add("text-decoration-line-through");
@@ -62,33 +85,36 @@ function addTask(text, done = false) {
     });
 
     const btn = document.createElement("button");
-    btn.classList.add("btn", "btn-danger", "btn-sm", "float-end");
-    btn.textContent = "Dzest";
-
-    btn.addEventListener("click", () => {
-        li.remove();
+    btn.classList.add("btn", "btn-danger", "btn-sm");
+    btn.textContent = "Dzēst";
+    btn.onclick = function (e) {
+        e.stopPropagation();
+        node.remove();
         datasave();
-    });
-
-    li.appendChild(span);
-    li.appendChild(btn);
-
-    document.getElementById("task-list").appendChild(li);
+    };
+    
+    node.appendChild(left);
+    node.appendChild(btn);
+    document.getElementById("task-list").appendChild(node);
 }
 
 function _fukcija() {
     const vert = document.getElementById("lauks").value;
-    if (vert === "") return;
+    const svar = document.getElementById("select").value;
 
-    addTask(vert);
+    if (vert === "" || svar === "default") return;
+
+    addTask(vert, false, svar);
     datasave();
 
     document.getElementById("lauks").value = "";
+    document.getElementById("select").value = "default";
 }
 
 window.onload = dataload;
 
 </script>
+
 
 </body>
 </html>
